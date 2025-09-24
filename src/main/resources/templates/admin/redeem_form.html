@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>เพิ่มโค้ดเติมเงิน</title>
+  <style>
+    .wrap{max-width:680px;margin:16px auto}
+    textarea{width:100%;min-height:220px}
+    .muted{color:#666}
+  </style>
+</head>
+<body>
+	<div th:replace="fragments/navbar :: body"></div>
+<div class="wrap">
+  <h2>เพิ่มโค้ดสำหรับสินค้า:
+    <span th:text="${product.name}">Product</span>
+    (#<span th:text="${product.id}">0</span>)
+  </h2>
+
+  <p class="muted">
+    สต็อกปัจจุบัน (โค้ด AVAILABLE):
+    <b th:text="${available}">0</b> โค้ด
+  </p>
+
+  <form th:action="@{/admin/products/{id}/codes(id=${product.id})}" method="post">
+    <label for="codes"><b>Redeem Codes</b> (หนึ่งโค้ดต่อหนึ่งบรรทัด)</label><br>
+    <textarea id="codes" name="codes" placeholder="เช่น
+ABCDEF-0001
+ABCDEF-0002
+XYZ-123-456"></textarea>
+
+    <div style="margin-top:10px;">
+      <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+      <button type="submit">บันทึกโค้ด</button>
+      <a th:href="@{/admin/products}" style="margin-left:8px;">ยกเลิก</a>
+    </div>
+  </form>
+
+  <p class="muted" style="margin-top:12px;">
+    * ถ้าใส่โค้ดซ้ำ ระบบจะบันทึกเฉพาะโค้ดที่ไม่ซ้ำ (ขึ้นกับ unique constraint ในตาราง)<br>
+    * สต็อกจะอัปเดตอัตโนมัติจากจำนวนโค้ดที่ AVAILABLE
+  </p>
+</div>
+</body>
+</html>

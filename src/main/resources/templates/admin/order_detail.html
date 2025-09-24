@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head><meta charset="UTF-8"><title>Order Detail</title></head>
+<body>
+<h2>Order #<span th:text="${order.id}"></span></h2>
+
+<p>
+  <b>Date:</b> <span th:text="${#temporals.format(order.createdAt, 'yyyy-MM-dd HH:mm')}"></span><br>
+  <b>Customer:</b>
+  <span th:text="${order.user.name}"></span>
+  (<span th:text="${order.user.email}"></span>)<br>
+</p>
+
+<table border="1" cellpadding="6">
+  <tr>
+    <th>Image</th>
+    <th>Product</th>
+    <th>Qty</th>
+    <th>Price</th>
+    <th>Line Total</th>
+  </tr>
+  <tr th:each="it : ${order.items}">
+    <td>
+      <img th:if="${it.product.imagePath}" th:src="${it.product.imagePath}" style="height:60px">
+    </td>
+    <td th:text="${it.product.name}"></td>
+    <td th:text="${it.quantity}"></td>
+    <td th:text="${#numbers.formatDecimal(it.price,1,2)}"></td>
+    <td th:text="${#numbers.formatDecimal(it.price * it.quantity,1,2)}"></td>
+  </tr>
+  <tr>
+    <td colspan="4" style="text-align:right;"><b>Total:</b></td>
+    <td><b th:text="${#numbers.formatDecimal(order.total,1,2)}"></b></td>
+  </tr>
+</table>
+
+<p><a th:href="@{/admin/orders}">Back to Sales History</a></p>
+</body>
+</html>

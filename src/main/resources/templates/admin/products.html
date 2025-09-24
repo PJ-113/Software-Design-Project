@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8"/>
+  <title>Admin – Products</title>
+  <style>
+    table{border-collapse: collapse; width:100%}
+    th, td{border:1px solid #ddd; padding:8px}
+    th{background:#f5f5f5; text-align:left}
+    .toolbar{margin:10px 0}
+    .muted{color:#777}
+    .danger{color:#c62828}
+    img.thumb{max-height:50px}
+  </style>
+</head>
+<body>
+	<div th:replace="fragments/navbar :: body"></div>
+  <h2>Products (Admin)</h2>
+
+  <!-- flash message -->
+  <div th:if="${msg}" style="color:green; margin-bottom:10px;" th:text="${msg}">OK</div>
+  <div th:if="${err}" style="color:#c62828; margin-bottom:10px;" th:text="${err}">Error</div>
+
+  <div class="toolbar">
+    <a th:href="@{/admin/products/new}">+ สร้างสินค้าใหม่</a>
+  </div>
+
+  <!-- ว่าง -->
+  <div th:if="${items == null or #lists.isEmpty(items)}" class="muted">
+    ยังไม่มีสินค้า
+  </div>
+
+  <!-- มีรายการ -->
+  <table th:if="${items != null and !#lists.isEmpty(items)}">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>รูป</th>
+        <th>ชื่อ</th>
+        <th>ราคา</th>
+        <th>สต็อก (โค้ดคงเหลือ)</th>
+        <th>การจัดการ</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr th:each="it : ${items}">
+        <td th:text="${it.id}">1</td>
+        <td>
+          <img class="thumb"
+               th:if="${it.imagePath != null and !#strings.isEmpty(it.imagePath)}"
+               th:src="@{${it.imagePath}}"
+               alt="img"/>
+        </td>
+        <td th:text="${it.name}">Product name</td>
+        <td th:text="${#numbers.formatDecimal(it.price,1,2)}">0.00</td>
+        <td>
+          <b th:classappend="${it.stock == 0} ? 'danger' : ''"
+             th:text="${it.stock}">0</b>
+        </td>
+        <td>
+          <a th:href="@{/admin/products/{id}/edit(id=${it.id})}">แก้ไข</a> |
+          <form th:action="@{/admin/products/{id}/delete(id=${it.id})}" method="post" style="display:inline;">
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+            <button type="submit" onclick="return confirm('ลบสินค้า?')">ลบ</button>
+          </form> |
+          <a th:href="@{/admin/products/{id}/codes(id=${it.id})}">อัปเดตสต็อก/เพิ่มโค้ด</a>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+</body>
+</html>
+

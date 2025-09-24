@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+	  
+<head>
+  <meta charset="UTF-8">
+  <title>Home</title>
+</head>
+<body>
+  <div th:replace="fragments/navbar :: body"></div>
+
+  <h2>Products</h2>
+
+  <!-- ยังไม่ล็อกอิน -->
+  <div sec:authorize="isAnonymous()">
+    <a th:href="@{/login}">Login</a> | 
+    <a th:href="@{/register}">Register</a>
+  </div>
+
+  <!-- ล็อกอินแล้ว 
+  <div sec:authorize="isAuthenticated()">
+    Hello, <span sec:authentication="name">user</span> |
+    <a th:href="@{/cart}">My Cart</a> |
+    <a th:href="@{/orders}">My Orders</a> |
+    <a th:href="@{/profile}">My Profile</a> |
+    <a th:href="@{/admin/products}" sec:authorize="hasRole('ADMIN')">Admin</a>
+    <form th:action="@{/logout}" method="post" style="display:inline;">
+      <button type="submit">Logout</button>
+    </form>
+  </div>-->
+
+  <!-- ถ้าไม่มีสินค้า -->
+  <div th:if="${#lists.isEmpty(products)}" style="color:gray; margin-top:16px;">
+    ยังไม่มีสินค้า
+  </div>
+
+  <!-- ถ้ามีสินค้า -->
+  <div th:each="p : ${products}" 
+       th:if="${!#lists.isEmpty(products)}"
+       style="border:1px solid #ccc; padding:8px; margin:8px;">
+
+    <img th:if="${p.imagePath}" th:src="@{${p.imagePath}}" 
+         alt="img" style="max-height:120px"><br>
+
+    <b th:text="${p.name}">Name</b><br>
+    <span th:text="${p.description}">desc</span><br>
+    <b th:text="${#numbers.formatDecimal(p.price,1,2)} + ' บาท'"></b><br>
+    <p>คงเหลือ: <span th:text="${p.stock}"></span> ชิ้น</p>
+
+    <form th:if="${p.stock > 0}" th:action="@{|/cart/add/${p.id}|}" method="post">
+      <input type="number" name="qty" value="1" min="1" th:attr="max=${p.stock}">
+      <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+      <button type="submit">Add to cart</button>
+    </form>
+
+    <p th:if="${p.stock == 0}" style="color:red;">สินค้าหมด</p>
+  </div>
+</body>
+</html>
+
+
+
+

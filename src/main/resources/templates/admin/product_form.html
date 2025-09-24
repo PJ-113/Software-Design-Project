@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8" />
+  <title th:text="${productId} != null ? 'Edit Product' : 'New Product'">Product Form</title>
+  <style>
+    .field{margin:8px 0}
+    .err{color:#c62828;margin:8px 0}
+    img.preview{max-height:180px;display:block;margin:8px 0}
+  </style>
+</head>
+<body>
+	<div th:replace="fragments/navbar :: body"></div>
+  <h2 th:text="${productId} != null ? 'Edit Product #'+${productId} : 'Create Product'">Product</h2>
+
+  <div th:if="${err}" class="err" th:text="${err}">Error</div>
+
+  <!-- ใช้ฟอร์มเดียวสำหรับ create & update -->
+  <form th:object="${form}"
+        th:action="${productId} != null ? @{/admin/products/{id}(id=${productId})} : @{/admin/products}"
+        method="post"
+        enctype="multipart/form-data">
+
+    <div class="field">
+      <label>Name</label><br/>
+      <input type="text" th:field="*{name}" required/>
+    </div>
+
+    <div class="field">
+      <label>Description</label><br/>
+      <textarea th:field="*{description}" rows="4"></textarea>
+    </div>
+
+    <div class="field">
+      <label>Price</label><br/>
+      <input type="text" th:field="*{price}" required/>
+    </div>
+
+    <!-- แสดงรูปเดิม (ตอนแก้ไข) ถ้ามี -->
+    <div class="field" th:if="${imagePath != null and !#strings.isEmpty(imagePath)}">
+      <label>Current Image</label><br/>
+      <img class="preview" th:src="@{${imagePath}}" alt="current image"/>
+    </div>
+
+    <div class="field">
+      <label>Upload Image</label><br/>
+      <input type="file" name="image" accept="image/*"/>
+      <!-- ไม่ bind กับ form.imagePath เพราะเราอัปโหลดผ่าน MultipartFile -->
+    </div>
+
+    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+
+    <div class="field">
+      <button type="submit" th:text="${productId} != null ? 'Update' : 'Create'">Save</button>
+      <a th:href="@{/admin/products}" style="margin-left:8px;">Cancel</a>
+    </div>
+  </form>
+</body>
+</html>
+

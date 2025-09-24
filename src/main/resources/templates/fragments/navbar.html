@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+  <meta charset="UTF-8">
+</head>
+<body>
+<!-- Nav Bar -->
+<nav style="background:#333; padding:10px;">
+  <a th:href="@{/}" style="color:white; margin-right:15px;">Home</a>
+  <a th:href="@{/cart}" style="color:white; margin-right:15px;" 
+     sec:authorize="isAuthenticated()">My Cart</a>
+  <a th:href="@{/orders}" style="color:white; margin-right:15px;"
+     sec:authorize="isAuthenticated()">My Orders</a>
+<a th:href="@{/profile}" style="color:white; margin-right:15px;"
+	      sec:authorize="isAuthenticated()">My Profile</a>
+  
+  <!-- Admin เท่านั้น -->
+  <a th:href="@{/admin}" style="color:yellow; margin-right:15px;"
+     sec:authorize="hasRole('ADMIN')">Admin</a>
+
+  <!-- login / logout -->
+  <span sec:authorize="isAnonymous()">
+    <a th:href="@{/login}" style="color:white; margin-right:10px;">Login</a>
+    <a th:href="@{/register}" style="color:white;">Register</a>
+  </span>
+</nav>
+</body>
+</html>

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head><meta charset="UTF-8"><title>Payment Success</title></head>
+<body>
+  <h2>✅ Payment Successful</h2>
+  <p th:text="'คำสั่งซื้อ #' + ${order.id} + ' ทำรายการสำเร็จแล้ว'"></p>
+  <p>ยอดรวม: <b th:text="${#numbers.formatDecimal(order.total,1,2)}">0.00</b> บาท</p>
+
+  <table border="1" cellpadding="6" cellspacing="0" th:if="${!#lists.isEmpty(order.items)}">
+    <tr><th>รูป</th><th>สินค้า</th><th>จำนวน</th><th>ราคา/ชิ้น</th><th>รวม</th></tr>
+    <tr th:each="it : ${order.items}">
+      <td>
+        <img th:if="${it.product.imagePath}" th:src="@{${it.product.imagePath}}" alt="img" style="max-height:80px">
+      </td>
+      <td th:text="${it.product.name}">Product</td>
+      <td th:text="${it.quantity}">1</td>
+      <td th:text="${#numbers.formatDecimal(it.price,1,2)}">0.00</td>
+      <td th:text="${#numbers.formatDecimal(it.price * it.quantity,1,2)}">0.00</td>
+    </tr>
+  </table>
+
+  <p style="margin-top:12px;">
+    <a th:href="@{/orders/{id}(id=${order.id})}">ดูรายละเอียดคำสั่งซื้อ</a> |
+    <a th:href="@{/}">กลับหน้าแรก</a>
+  </p>
+</body>
+</html>

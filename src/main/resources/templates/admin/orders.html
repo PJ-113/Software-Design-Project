@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head><meta charset="UTF-8"><title>Admin - Sales History</title></head>
+<body>
+<h2>Admin - Sales History</h2>
+
+<table border="1" cellpadding="6">
+  <tr>
+    <th>ID</th>
+    <th>Date</th>
+    <th>Customer</th>
+    <th>Items</th>
+    <th>Total</th>
+	<th>Order Detail</th>
+  </tr>
+  <tr th:each="o : ${orders}">
+    <td th:text="${o.id}"></td>
+    <td th:text="${#temporals.format(o.createdAt, 'yyyy-MM-dd HH:mm')}"></td>
+    <td>
+      <span th:text="${o.user.name}">name</span>
+      (<span th:text="${o.user.email}">email</span>)
+    </td>
+    <td th:text="${#lists.size(o.items)}"></td>
+    <td th:text="${#numbers.formatDecimal(o.total,1,2)}"></td>
+	<td>
+	<a th:href="@{|/admin/orders/${o.id}|}">View</a>
+	</td>
+  </tr>
+</table>
+
+<p><a th:href="@{/admin/products}">Back to Products</a></p>
+</body>
+</html>

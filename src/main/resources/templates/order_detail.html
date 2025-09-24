@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Order Detail</title>
+</head>
+<body>
+	<div th:replace="fragments/navbar :: body"></div>
+<h2>Order Detail</h2>
+
+<div th:if="${order == null}">
+  ไม่พบคำสั่งซื้อ
+</div>
+
+<div th:if="${order != null}">
+  <p>เลขที่คำสั่งซื้อ: <b th:text="${order.id}">1</b></p>
+  <span th:text="${#temporals.format(order.createdAt, 'dd/MM/yyyy HH:mm:ss')}">
+      23/09/2025 14:30:15
+    </span>
+
+  <table border="1" cellpadding="6" cellspacing="0" th:if="${!#lists.isEmpty(order.items)}">
+    <tr>
+      <th> </th><th>สินค้า</th><th>จำนวน</th><th>ราคา/ชิ้น</th><th>code</th>  
+    </tr>
+    <tr th:each="it : ${order.items}">
+		<td>
+		      <img th:if="${it.product.imagePath != null}"
+		           th:src="@{${it.product.imagePath}}"
+		           alt="img"
+		           style="max-height:80px;">
+		    </td>
+      <td th:text="${it.product.name}">Product</td>
+      <td th:text="${it.quantity}">1</td>
+      <td th:text="${#numbers.formatDecimal(it.price,1,2)}">0.00</td>
+	  <td>
+	    <span th:if="${it.redeemCodes != null and !#lists.isEmpty(it.redeemCodes)}">
+	      <span th:each="rc, stat : ${it.redeemCodes}">
+	        <code th:text="${rc.code}">XXXX-XXXX</code>
+	        <!-- เว้นวรรคหรือใส่ comma ระหว่างโค้ด -->
+	        <span th:if="${!stat.last}">, </span>
+	      </span>
+	    </span>
+	    <span class="muted" th:if="${it.redeemCodes == null or #lists.isEmpty(it.redeemCodes)}">
+	      — ไม่มีโค้ด —
+	    </span>
+	  </td>
+    </tr>
+  </table>
+
+  <h3>
+    ยอดรวม: <span th:text="${#numbers.formatDecimal(order.total,1,2)}">0.00</span> บาท
+  </h3>
+
+  <p style="margin-top:12px;"><a th:href="@{/}">← Back to Home</a></p>
+</div>
+</body>
+</html>
+
